@@ -1,5 +1,5 @@
 //Adding Experiment Class to package
-package ca_assignment_0;
+//package ca_assignment_0;
 
 //Experiment Class definition
 public class Experiment {
@@ -23,13 +23,13 @@ public class Experiment {
     public int doExperiment (int numOfExp, double expPvalue, int expWidth) {
 
         //Changing p-value of sensors to expPvalue
-        ownCell.changePvalue(expPvalue);
-        frontCenterCell.changePvalue(expPvalue);
-        frontLeftCell.changePvalue(expPvalue);
-        frontRightCell.changePvalue(expPvalue);
+        this.ownCell.changePvalue(expPvalue);
+        this.frontCenterCell.changePvalue(expPvalue);
+        this.frontLeftCell.changePvalue(expPvalue);
+        this.frontRightCell.changePvalue(expPvalue);
 
         //Changing width to expWidth
-        border.changeWidth(expWidth);
+        this.border.changeWidth(expWidth);
 
         //Sum variable for average time calculation
         int sum = 0;
@@ -38,26 +38,26 @@ public class Experiment {
         for (int i = 0; i < numOfExp; i++) {
 
             //Resetting time to zero initially
-            clock.resetTime();
+            this.clock.resetTime();
 
             //Setting coveredWidth value to zero initially
-            coveredWidth = 0;
+            this.coveredWidth = 0;
 
             //Infiltrator standing just behind the first row of the Sensor-grid
             while (true) {
 
-                frontCenterCell.intialiseState();
-                frontLeftCell.intialiseState();
-                frontRightCell.intialiseState();
+                this.frontCenterCell.intialiseState();
+                this.frontLeftCell.intialiseState();
+                this.frontRightCell.intialiseState();
 
-                clock.incrementTime10();
+                this.clock.incrementTime10();
 
-                if (coveredWidth == 1) {
+                if (this.coveredWidth == 1) {
                     break;
                 }
                 else {
-                    if (frontCenterCell.getSensorState() == 0 || frontLeftCell.getSensorState() == 0 || frontRightCell.getSensorState() == 0) {
-                        coveredWidth++;
+                    if (this.frontCenterCell.getSensorState() == 0 || this.frontLeftCell.getSensorState() == 0 || this.frontRightCell.getSensorState() == 0) {
+                        this.coveredWidth++;
                     }
                 }
 
@@ -67,20 +67,20 @@ public class Experiment {
             //Infiltrator covers rest of the Sensor-grid to reach at the last row
             while (true) {
 
-                ownCell.intialiseState();
-                frontCenterCell.intialiseState();
-                frontLeftCell.intialiseState();
-                frontRightCell.intialiseState();
+                this.ownCell.intialiseState();
+                this.frontCenterCell.intialiseState();
+                this.frontLeftCell.intialiseState();
+                this.frontRightCell.intialiseState();
 
-                clock.incrementTime10();
+                this.clock.incrementTime10();
 
-                if (coveredWidth == expWidth) {
+                if (this.coveredWidth == expWidth) {
                     break;
                 }
                 else {
-                    if (ownCell.getSensorState() == 0) {
-                        if (frontCenterCell.getSensorState() == 0 || frontLeftCell.getSensorState() == 0 || frontRightCell.getSensorState() == 0) {
-                            coveredWidth++;
+                    if (this.ownCell.getSensorState() == 0) {
+                        if (this.frontCenterCell.getSensorState() == 0 || this.frontLeftCell.getSensorState() == 0 || this.frontRightCell.getSensorState() == 0) {
+                            this.coveredWidth++;
                         }
                     }
                 }
@@ -91,16 +91,16 @@ public class Experiment {
             //Infiltrator tries to cross the last row of the Sensor-grid and enters the DC
             while (true) {
 
-                ownCell.intialiseState();
+                this.ownCell.intialiseState();
 
-                clock.incrementTime10();
+                this.clock.incrementTime10();
 
-                if (coveredWidth == expWidth + 1) {
+                if (this.coveredWidth == expWidth + 1) {
                     break;
                 }
                 else {
-                    if (ownCell.getSensorState() == 0) {
-                        coveredWidth++;
+                    if (this.ownCell.getSensorState() == 0) {
+                        this.coveredWidth++;
                     }
                 }
 
@@ -108,7 +108,7 @@ public class Experiment {
             //Infilrator successfully enters DC by crossing last row of the Sensor-grid
         
             //Appending sum value to calculate average time after last step
-            sum += clock.getTime();
+            sum += this.clock.getTime();
         
         }
 
@@ -117,6 +117,19 @@ public class Experiment {
 
         //Returning avg_time value
         return avg_time;
+
+    }
+
+    public static void main(String[] args) {
+
+        int numberofExp = Integer.valueOf(args[0]);
+        double expProb = Double.valueOf(args[1]);
+        int experimentWidth = Integer.valueOf(args[2]);
+
+        
+        Experiment experiment = new Experiment();
+        int averagetime = experiment.doExperiment(numberofExp, expProb, experimentWidth);
+        System.out.println("For given input WIDTH = " + experimentWidth + " and P-VALUE = " + String.format("%.2f",expProb) + " the output AvgTimeTaken = " + averagetime);
 
     }
 

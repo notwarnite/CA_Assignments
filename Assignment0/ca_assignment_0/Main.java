@@ -1,5 +1,5 @@
 //Adding Main Class to package
-package ca_assignment_0;
+//package ca_assignment_0;
 
 //Import FileWriter Class
 import java.io.FileWriter;
@@ -31,17 +31,18 @@ public class Main {
             csvWriter.write("\n");
 
             //Local P-value variable definition
-            double expProb = 0;
+            double expProb = 10;
             
             //Varying Width value from 5 to 100 in steps of 5
             for (int expw = 5; expw < 105; expw += 5) {
 
                 //Varying expProb value from 0 to 0.95 in steps of 0.05
-                for (int prob = 0; prob < 20; prob++) {
+                for (int prob = 0; prob < 100; prob += 5) {
 
-                    expProb = prob*0.05;
+                    expProb = prob;
 
                     int avgtime = experiment.doExperiment(numberOfExp, expProb, expw);
+                    //experiment.doExperiment(numberOfExp, expProb, expw);
 
                     //Writing experiment values to file : output.csv for each iteration
                     csvWriter.write(String.valueOf(expw));
