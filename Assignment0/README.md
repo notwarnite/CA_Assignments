@@ -1,3 +1,11 @@
 This Repository contains Computer Architecture Lab (CS311) Assignment-0 Solutions and End-Report.
 
-Main Class (Driver Code) and supporting Classes are contained in Folder : 'ca_assignment_0', to run an experiment clone this repository, change current directory to 'ca_assignment_0' and run command 'java Main.java'. The outputs will be generated to a File : 'output.csv'. 3D Plot of the generated output can be obtained by using the File : 'ouputgraph.py', to do so, change your directory to 'Assignment0' by running command 'cd ..' and then run 'python ouputgraph.py' or 'python3 outputgraph.py'. A 3D Plot of Average Time Taken of 1000 iterations for specific pairs of Sensor P-value and Border Width will be generated.
+Steps to reproduce Whole Experiment
+1. Extract the ZIP package.
+2. cd to ’ca assignment 0’ folder.
+3. Run command $ javac *.java
+4. To run series of experiments with P-value from 0.00 to 0.95 and Width value from 5 to
+100, run command $ java -cp . Main
+5. To run an experiment with command-line input as number of iterations, P-value, Width,
+run command $ java -cp . Experiment numExp pvalue width
+e.g. $ java -cp . Experiment 1000 57.3 32

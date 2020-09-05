@@ -39,7 +39,7 @@ public class Main {
                 //Varying expProb value from 0 to 0.95 in steps of 0.05
                 for (int prob = 0; prob < 100; prob += 5) {
 
-                    expProb = prob;
+                    expProb = Double.valueOf(prob);
 
                     int avgtime = experiment.doExperiment(numberOfExp, expProb, expw);
                     //experiment.doExperiment(numberOfExp, expProb, expw);
