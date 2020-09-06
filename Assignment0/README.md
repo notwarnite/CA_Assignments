@@ -2,7 +2,7 @@ This Repository contains Computer Architecture Lab (CS311) Assignment-0 Solution
 
 Steps to reproduce Whole Experiment
 1. Extract the ZIP package.
-2. cd to ’ca assignment 0’ folder.
+2. cd to ''' ’ca assignment 0’ ''' folder.
 3. Run command $ javac *.java
 4. To run series of experiments with P-value from 0.00 to 0.95 and Width value from 5 to
 100, run command $ java -cp . Main
