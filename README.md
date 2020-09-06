@@ -1,0 +1,1 @@
+This Repository contains Solutions and End-Reports for all Computer Architecture Lab (CS311) Assignments.
