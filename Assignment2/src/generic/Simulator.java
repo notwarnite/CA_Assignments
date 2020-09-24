@@ -122,29 +122,29 @@ public class Simulator {
 		return opcode;
 	}
 
-	public static String intBinary(int val,int nbits)
+	public static void writeToFile(String objectProgramFile,int writeValue)
 	{
-		String tempBinary = Integer.toBinaryString(val);
-		if(val >= 0)
+		try {
+			DataOutputStream dataOut = new DataOutputStream(new FileOutputStream(objectProgramFile, true));
+			dataOut.writeInt(writeValue);
+		}
+		catch(Exception e) {
+			System.out.println("error occured");
+		}
+	}
+
+	public static String intToBinary(int intValue,int nbits)
+	{
+		String tempBinary = Integer.toBinaryString(intValue);
+		if(intValue >= 0)
 			while(tempBinary.length() < nbits)
 				tempBinary = "0"+tempBinary;
-
 		else {
 			tempBinary = tempBinary.substring(32 - nbits);
 		}
 		return tempBinary;
 	}
 
-	public static void writeToFile(String objectProgramFile,int val)
-	{
-		try {
-			DataOutputStream dataOut = new DataOutputStream(new FileOutputStream(objectProgramFile, true));
-			dataOut.writeInt(val);
-		}
-		catch(Exception e) {
-			System.out.println("error occured");
-		}
-	}
 
 	public static void assemble(String objectProgramFile, String assemblyProgramFile)
 	{
@@ -165,7 +165,6 @@ public class Simulator {
 		if(line.contains(".data"))
 			line= scan.next();
 		int temp = 0;
-
 		while(!line.contains(".text"))
 		{
 			if(line.matches(".*\\d+.*"))
@@ -181,72 +180,72 @@ public class Simulator {
 		for(int l=0;l<ParsedProgram.code.size();l++) {
 			Instruction newInstruction = ParsedProgram.getInstructionAt(pc);
 
-			Operand src1 = newInstruction.getSourceOperand1();
-			Operand src2 = newInstruction.getSourceOperand2();
-			Operand dstOp = newInstruction.getDestinationOperand();
+			Operand src1 = newInstruction.getSourceOperand1();		//object for source 1
+			Operand src2 = newInstruction.getSourceOperand2();		//object for source 2
+			Operand dstOp = newInstruction.getDestinationOperand();		//object for destination
 
 			Instruction.OperationType op = newInstruction.getOperationType();
 			String opcode= getOpcode(op);
 
-			String final_instruct=opcode;
+			String final_line =opcode;
 
 			if(src1 == null & dstOp == null){
-				final_instruct += "000000000000000000000000000";
+				final_line += "000000000000000000000000000";
 			}
 			else if(src1 == null & dstOp.getOperandType() == Operand.OperandType.Label){
 				int imm_val = ParsedProgram.symtab.get(dstOp.getLabelValue());
 				imm_val = imm_val-pc;
-				String imm_bin = intBinary(imm_val,22); // integer to  extended binary conversion
-				final_instruct += "00000" + imm_bin;	//starting 5 bits plus the imm
+				String imm_bin = intToBinary(imm_val,22); // integer to  extended binary conversion
+				final_line += "00000" + imm_bin;	//starting 5 bits plus the imm_bin
 			}
 			else
 			{
-				String rs1 = intBinary(src1.getValue(),5);		//binary rs1 value
+				String rs1 = intToBinary(src1.getValue(),5);		//binary rs1 value
 
 				if(dstOp.getOperandType() == Operand.OperandType.Register)		//destination operand type register
 				{
-					String rd = intBinary(dstOp.getValue(),5);		//binary destination value
+					String rd = intToBinary(dstOp.getValue(),5);		//binary destination value
 
 					if(src2.getOperandType() == Operand.OperandType.Register)
 					{
-						String rs2 = intBinary(src2.getValue(),5);		//binary rs2 value
-						final_instruct += rs1+rs2+rd+"000000000000";
+						String rs2 = intToBinary(src2.getValue(),5);		//binary rs2 value
+						final_line += rs1+rs2+rd+"000000000000";
 					}
 					else
 					{
 						int imm_val=0;
-						if(src2.getOperandType() == Operand.OperandType.Label)
+						if(src2.getOperandType() == Operand.OperandType.Label)		//src2 is of type label
 							imm_val = ParsedProgram.symtab.get(src2.getLabelValue());
-						else
+						else														//if not of type label
 							imm_val = src2.getValue();
-						String imm = intBinary(imm_val,17);
-						final_instruct += rs1+rd+imm;
+						String imm = intToBinary(imm_val,17);
+						final_line += rs1+rd+imm;
 					}
 				}
 				else if(dstOp.getOperandType() == Operand.OperandType.Label)		//operand type label
 				{
-					String rs2 = intBinary(src2.getValue(),5);
+					String rs2 = intToBinary(src2.getValue(),5);
 					int imm_val = ParsedProgram.symtab.get(dstOp.getLabelValue());
 					imm_val = imm_val - pc;
-					String imm_bin = intBinary(imm_val,17);
-					final_instruct += rs1+rs2+imm_bin;
+					String imm_bin = intToBinary(imm_val,17);
+					final_line += rs1+rs2+imm_bin;
 				}
 
 			}
 
 			// CONVERSION TO Decimal
-			int final_instruct_int;
-			if(final_instruct.charAt(0) == '1'){		// handling 2's complement
-				final_instruct = final_instruct.replace('0', ' ').replace('1', '0').replace(' ', '1');
-				int decimal = Integer.parseInt(final_instruct, 2);
+			int instructLine;
+			if(final_line.charAt(0) == '1'){		// handling 2's complement, checking the first bit
+				final_line = final_line.replace('0', ' ').replace('1', '0').replace(' ', '1');		//inversion step
+				int decimal = Integer.parseInt(final_line, 2);
 				decimal = (decimal + 1) * -1;
-				final_instruct_int = decimal;
+				instructLine = decimal;
 			}
 			else{
-				final_instruct_int = Integer.parseInt(final_instruct, 2);
+				instructLine = Integer.parseInt(final_line, 2);
 			}
 
-			writeToFile(objectProgramFile,final_instruct_int);
+			writeToFile(objectProgramFile,instructLine);
 			pc += 1;
 
 		}
