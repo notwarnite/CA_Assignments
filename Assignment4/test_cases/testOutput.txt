@@ -1,0 +1,3 @@
+Number of Stalls = 98
+Number of Cycles taken = 548
+Number of Instructions on wrong path= 88
